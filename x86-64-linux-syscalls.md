@@ -15,3 +15,5 @@ If you want your assembler programs to work reliably across different kernels an
 So, how does it work? It's based on the x86-64 UNIX C ABI which goes like this: arguments 1-6 are passed in the registers RDI, RSI, RDX, RCX, R8, R9. The result comes back in the RAX register, if 64bits isn't enough the high bits are in RDX. The parameter registers plus R10 and R11 are clobbered, the rest are saved. C's int type is 32bits, C's long type is 64bits. It's all described in this document.
 
 For the 64bit syscalls, parameter 4 is passed in R10 instead of RCX. RCX is still clobbered. The syscall number is passed in RAX, as in 32bit mode, but instead of the "int 0x80" used in 32bit mode, 64bit syscalls are made with the "syscall" instruction. The syscall numbers can be found in the Linux source code under arch/x86/entry/syscalls/syscall_64.tbl.
+
+original source: https://callumscode.com/blog/2010/jan/x86-64-linux-syscalls
