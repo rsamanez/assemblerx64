@@ -17,3 +17,10 @@ So, how does it work? It's based on the x86-64 UNIX C ABI which goes like this: 
 For the 64bit syscalls, parameter 4 is passed in R10 instead of RCX. RCX is still clobbered. The syscall number is passed in RAX, as in 32bit mode, but instead of the "int 0x80" used in 32bit mode, 64bit syscalls are made with the "syscall" instruction. The syscall numbers can be found in the Linux source code under arch/x86/entry/syscalls/syscall_64.tbl.
 
 original source: https://callumscode.com/blog/2010/jan/x86-64-linux-syscalls
+
+
+Document links:
+
+NASM - The Netwide Assembler  https://www.nasm.us/xdoc/2.14.02/html/nasmdoc0.html
+Assembler Code Tutorials  http://asm.sourceforge.net/resources.html#tutorials
+Learn NASM Assembly 32bits https://www.tutorialspoint.com/assembly_programming/index.htm
