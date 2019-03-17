@@ -22,5 +22,7 @@ original source: https://callumscode.com/blog/2010/jan/x86-64-linux-syscalls
 Document links:
 
 NASM - The Netwide Assembler  https://www.nasm.us/xdoc/2.14.02/html/nasmdoc0.html
+
 Assembler Code Tutorials  http://asm.sourceforge.net/resources.html#tutorials
+
 Learn NASM Assembly 32bits https://www.tutorialspoint.com/assembly_programming/index.htm
