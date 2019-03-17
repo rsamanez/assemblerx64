@@ -19,7 +19,7 @@ For the 64bit syscalls, parameter 4 is passed in R10 instead of RCX. RCX is stil
 original source: https://callumscode.com/blog/2010/jan/x86-64-linux-syscalls
 
 
-Document links:
+*Document links:*
 
 NASM - The Netwide Assembler  https://www.nasm.us/xdoc/2.14.02/html/nasmdoc0.html
 
