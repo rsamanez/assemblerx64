@@ -1,0 +1,27 @@
+     1                                  ; Declare needed C  functions
+     2                                          extern	printf		; the C function, to be called
+     3                                  
+     4                                          section .data		; Data section, initialized variables
+     5 00000000 48656C6C6F20776F72-     msg:	db "Hello world", 0	; C string needs 0
+     5 00000009 6C6400             
+     6 0000000C 25730A00                fmt:    db "%s", 10, 0          ; The printf format, "\n",'0'
+     7                                  
+     8                                          section .text           ; Code section.
+     9                                  
+    10                                          global main		; the standard gcc entry point
+    11                                  main:				; the program label for the entry point
+    12 00000000 55                              push    rbp		; set up stack frame, must be alligned
+    13                                  	
+    14 00000001 48BF-                   	mov	rdi,fmt
+    14 00000003 [0C00000000000000] 
+    15 0000000B 48BE-                   	mov	rsi,msg
+    15 0000000D [0000000000000000] 
+    16 00000015 B800000000              	mov	rax,0		; or can be  xor  rax,rax
+    17 0000001A E8(00000000)                    call    printf		; Call C function
+    18                                  
+    19 0000001F 5D                      	pop	rbp		; restore stack
+    20                                  
+    21 00000020 B800000000              	mov	rax,0		; normal, no error, return value
+    22 00000025 C3                      	ret			; return
+    23                                  
+    24                                     
