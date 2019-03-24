@@ -19,6 +19,10 @@ ld -o sample sample.o
 use ddd a linux gui Debugger.   
 
 DDD Reference:  http://www.gnu.org/software/ddd/
+   
+# syscall reference and demos   
+https://www.exploit-db.com/shellcodes
+
 
 
 
