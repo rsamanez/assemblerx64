@@ -1,10 +1,16 @@
+;  program to test in / out strings and numbers in 64bits
+;  nasm -f elf64 -o printnumber64.asm
+;  ld -o printnumber64 printnumber64.o
+;  ./printnumber64
+;===============================================================
+
 ; function print 64 bits implementation
 ;--------------------------------------
 global _start
 
 section .data
  newline: db 0ah,0     ;    *
-  a:   dq 645657754416,0
+  a:   dq 12345,0
 
 section .bss
  buffer:  resq 100
@@ -59,15 +65,18 @@ exit:
 	mov rdi,0
 	syscall
 
+
 scanf:
 	push rax
 	push rdi
 	push rdx
+	push rsi
 	mov rax,0
 	mov rdi,1
 	mov rsi,buffer
-	mov rdx,10      ;  max 10 digits number
+	mov rdx,19      ;  max 19 digits number
 	syscall
+	pop rsi
 	pop rdx
 	pop rdi
 	pop rax
@@ -76,7 +85,6 @@ scanf:
 numbertobuff:
 	push rcx
 	push rdx
-        mov rax,[a]
         mov rcx,0ah
 	mov byte[buffer+rbx+1],0
    .pnfl01:
@@ -97,6 +105,40 @@ numbertobuff:
 	pop rcx
 	ret
 
+bufftonumber:
+	push rcx
+	push rbx
+	push rdx
+	push rdi
+	mov rbx,0   ; looking for the end
+   .buffx1:
+	mov cl,byte[buffer+rbx]
+	cmp cl,0ah
+	jz  .buffx2
+	inc rbx
+	jmp .buffx1
+   .buffx2:
+	mov rdi,0
+	mov rcx,1
+   .buffx3:
+	mov rax,0
+	mov al,byte[buffer+rbx-1]
+	sub al,48                      ; subtract ASCII of 0
+	mov rdx,0
+	mul rcx
+	add rdi,rax
+	mov rdx,0
+	mov rax,10
+	mul rcx
+	mov rcx,rax
+	dec rbx
+	jnz .buffx3
+	mov rax,rdi
+	pop rdi
+	pop rdx
+	pop rbx
+	pop rcx
+	ret
 ;-------------------------------------
 ;   printnumberf usage
 ;       mov rax,number to print
@@ -132,7 +174,11 @@ printnumber:
 	pop rbx
 	ret
 
-
+;============================================================
+;
+;  PROGRAM START
+;
+;============================================================
 
 _start:
 
@@ -143,6 +189,16 @@ _start:
 	call printnumberf
 	mov rax,[a]
 	call printnumber
+
+	mov rsi,msg3
+	call print
+	call scanf
+;	mov rsi,buffer
+;	call println
+
+	call bufftonumber
+	call printnumber
+
 
 
 	call exit
