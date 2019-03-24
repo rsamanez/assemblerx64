@@ -16,7 +16,7 @@ nasm -f elf64 -F dwarf -g  sample.asm
 
 ld -o sample sample.o   
 
-use gdb to debugger with ddd gui Interface.   
+use ddd a linux gui Debugger.   
 
 DDD Reference:  http://www.gnu.org/software/ddd/
 
