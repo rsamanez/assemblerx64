@@ -14,7 +14,7 @@ section .data
   a:   dq 645657754416        ; Number to Print, it is defined in 8bytes length
 
 section .bss
- buffer:  resq 100            ; Memory Buffer to convert the number to string
+ buffer:  resb 100            ; Memory Buffer to convert the number to string
 
 section .text
 
@@ -41,7 +41,7 @@ _start:
     cmp rbx,0
     jnz .pnfl01
 ;----END Transforming Process
-    
+
     mov rax, 1          ; syscall to print string
     mov rdi, 1
     mov rsi,buffer

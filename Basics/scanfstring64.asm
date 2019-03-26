@@ -16,8 +16,8 @@ section .data
   newline: db 0ah,0
 
 section .bss
-  buffer:  resq 100   ; max message length 100 characters
-  extra:  resq 10
+  buffer:  resb 100   ; max message length 100 characters
+  extra:  resb 10
 
 section .rodata    ; read only data section
   msg: db "Write a string and then press [ENTER]:",0
