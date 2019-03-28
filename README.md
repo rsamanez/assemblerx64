@@ -22,7 +22,25 @@ DDD Reference:  http://www.gnu.org/software/ddd/
    
 # syscall reference and demos   
 https://www.exploit-db.com/shellcodes
+   
+http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
 
 
+# x86 and amd64 instruction reference
+https://www.felixcloutier.com/x86
 
+# Assembly Programming Tutorial
+https://www.tutorialspoint.com/assembly_programming/index.htm
 
+# More samples
+http://lez-uncomplicate.blogspot.com/2012/02/nasm-example-3-input-array-and-sort-it.html
+
+# Assembler Tutor
+https://asmtutor.com/#lesson1
+https://www.csee.umbc.edu/portal/help/nasm/sample_64.shtml#hello_64.asm
+
+# Intel® 64 and IA-32 ArchitecturesSoftware Developer’s Manual
+https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf
+
+# ASCII Reference
+https://elcodigoascii.com.ar/codigos-ascii/numero-cero-0-codigo-ascii-48.html
