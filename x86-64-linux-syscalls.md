@@ -17,7 +17,8 @@ So, how does it work? It's based on the x86-64 UNIX C ABI which goes like this: 
 For the 64bit syscalls, parameter 4 is passed in R10 instead of RCX. RCX is still clobbered. The syscall number is passed in RAX, as in 32bit mode, but instead of the "int 0x80" used in 32bit mode, 64bit syscalls are made with the "syscall" instruction. The syscall numbers can be found in the Linux source code under arch/x86/entry/syscalls/syscall_64.tbl.
 
 original source: https://callumscode.com/blog/2010/jan/x86-64-linux-syscalls
-
+   
+   https://gist.github.com/j4cobgarby/a4abb24884aa2e59e6e712d91b664c4a
 
 ***Document links:***
 
