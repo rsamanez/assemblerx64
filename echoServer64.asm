@@ -44,10 +44,12 @@ section .data
     ;; sockaddr_in structure for the address the listening socket binds to
     pop_sa istruc sockaddr_in
         at sockaddr_in.sin_family, dw 2            ; AF_INET
-        at sockaddr_in.sin_port, dw 0xa1ed        ; port 60833
+        at sockaddr_in.sin_port, dw 0x8010          ; port 4224 0x1080
         at sockaddr_in.sin_addr, dd 0             ; localhost
         at sockaddr_in.sin_zero, dd 0, 0
     iend
+
+
     sockaddr_in_len     equ $ - pop_sa
 
 section .text
