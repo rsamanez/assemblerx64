@@ -1,7 +1,35 @@
 ; Exercise
 ;=================================================================================================
-;Calculate factorial of 10000
+;Calculate factorial of until 10000
 ;
+; Algorithm
+;multiply(a[1..p], b[1..q], base)                            // Operands containing rightmost digits at index 1
+;  product = [1..p+q]                                        // Allocate space for result
+;  for b_i = 1 to q                                          // for all digits in b
+;    carry = 0
+;    for a_i = 1 to p                                        // for all digits in a
+;      product[a_i + b_i - 1] += carry + a[a_i] * b[b_i]
+;      carry = product[a_i + b_i - 1] / base
+;      product[a_i + b_i - 1] = product[a_i + b_i - 1] mod base
+;    product[b_i + p] = carry                               // last digit comes from final carry
+;  return product
+;
+; PHP Implementation
+;   $a = array(4,6,7,8);
+;   $b = array(7,8);
+;   $result=array(0,0,0,0,0,0,0,0);  
+;   for($i=0;$i<4;$i++)
+;   {
+;     $carry = 0;
+;     for($j=0;$j<2;$j++)
+;     {
+;        $result[$j+$i] += $carry + $b[$j]*$a[$i];
+;        $carry = intdiv ( $result[$j+$i],10);
+;        $result[$j+$i] = $result[$j+$i] % 10;
+;     }
+;     $result[$i+2] = $carry;
+;   }
+;    print_r($result);  // [8,6,4,2,6,7,0,0]
 ;=================================================================================================
 ; Compile with:
 ;     nasm -f elf64 -o bigFactorialNumber64.o bigFactorialNumber64.asm
@@ -16,136 +44,152 @@
 global _start
 
 %include 'basicFunctions.asm'
+ 
 
-  
 section .data
-; buff for 4 numbers of 40000 digits each one
- buff: times 40000 db '-'
- factors: times 120000 db 0
- result: times 40000 db '-'
- xxend:   db 0,0,0
+ buff1: times 40000 db '-'
+ buff2: times 6 db '-'
+ result: times 40004 db 0
+ printable: times 40000 db 0
+ carry: db 0
+ msg1: db "Factorial of [",0
+ msg2: db "]=",0
 
 section .text
 
-getSize:
-    mov rbx,0
+getSize:            ; buffer RSI   return size in RBX
+    mov rbx,-1
 .getSizex0:
-    cmp byte[rsi+rbx],0
-    jz .getSizex1
     inc rbx
-    jmp .getSizex0
-.getSizex1:
+    cmp byte[rsi+rbx],'-'
+    jnz .getSizex0
+    ret
+
+resetResult:
+    push rbx
+    mov rbx,0
+.resetloopx1:
+    mov byte[result+rbx],0
+    inc rbx
+    cmp rbx,40004
+    jnz .resetloopx1
+    pop rbx
     ret
 
  _start:
 
-;setting the first number 10! = 3628800
 ;   move to buffer in inverse order
-    mov byte[buff],0
-    mov byte[buff+1],0
-    mov byte[buff+2],8
-    mov byte[buff+3],8
-    mov byte[buff+4],2
-    mov byte[buff+5],6
-    mov byte[buff+6],3
-    mov r8,23       ; next factorial to be calculated
+    mov byte[buff1],1
+    mov byte[buff2],2
 
+.nextNumber:    
+    mov rsi,buff1
+    call getSize
+    mov r8,rbx          ;  R8 = q
+    mov rsi,buff2
+    call getSize
+    mov r9,rbx          ;  R9 = p
 
-    mov r9,0        ; index in the actual number
-    mov r10,40000   ; index of the next Factor
-    mov r11,0       ; numElements to sum
-
-
-
-    mov rax,r8      ; Unsigned divide RDX:RAX by RBX, with result stored in RAX ← Quotient, RDX ← Remainder.
-    
-    
- .nextSum:   
-    mov rbx,10
-    mov rdx,0
-    div rbx
-    push rax        ; RAX = Quotient
-    push rdx
-    pop rax         ; RAX = Remainder [AL]
-    mov cl,0        ; carrier
-
-.nextDigit:
-    push rax
-    mov bl,byte[buff+r9]
-    mul bl                                ;Unsigned multiply (AX ← AL ∗ r/m8).      
+    mov rdx,0           ;  $i=0  
+.forA:
+    mov byte[carry],0               ; carry = 0
+    mov rcx,0           ;  $j=0
+.forB:
+    mov al,byte[buff1+rdx]          ;  $a[$i]
+    mov bl,byte[buff2+rcx]          ;  $b[$j]
+    mul bl                          ; al = al * bl
+    add al,byte[carry]              ; al = al + carry
+    add byte[result+rcx+rdx],al     ; $result[$j+$i] = $result[$j+$i] + $carry + $b[$j]*$a[$i]; 
     mov bl,10
-    div bl          ;Unsigned divide AX by r/m8, with result stored in AL ← Quotient, AH ← Remainder.
-    add ah,cl
-    push rbx
-    mov rbx,r10
-    add rbx,r9
-    mov byte[buff+rbx],ah
-    pop rbx
-    push rax         ; save the carrier al
-    pop rcx          ; load the carrier cl
-    inc r9
-    pop rax
-    cmp byte[buff+r9],'-'
-    jnz .nextDigit
-    push rcx
-    pop rax
-    push rax
-    mov rax,r10
-    add rax,r9
-    mov byte[buff+rax],ah   ; move the carrier to buffer
-    pop rax
-    mov r9,0                    ; reset actual number index
-    inc r11                     ; add numElements
-    push r10
-    pop rax
-    add rax,r10
-    inc rax
-    mov r10,rax                 ; R10 = R10 + 40001
-    pop rax                     ; Quotient to RAX
-    cmp rax,0
-    jnz .nextSum
+    mov ah,0
+    mov al,byte[result+rcx+rdx]
+    div bl                          ; AX/bl ==>  AL=Quotient, AH=Remainder
+    mov byte[carry],al              ; $carry = intdiv ( $result[$j+$i],10);
+    mov byte[result+rcx+rdx],ah     ; $result[$j+$i] = $result[$j+$i] % 10;
+    inc rcx
+    cmp rcx,r9
+    jnz .forB
+    mov byte[result+rdx+r9],al    ; $result[$i+p] = $carry;
+    inc rdx
+    cmp rdx,r8
+    jnz .forA
+    
+    push r9
+    mov rax,r9                      
+    add rax,rdx
+    mov r9,rax
+    mov r10,rax
+    mov rbx,0
+.loopx1:
+    mov al,byte[result+rbx] 
+    mov byte[buff1+rbx],al          ; moving result to buffer1
+    add al,48
+    dec r10
+    mov byte[printable+r10],al
+    inc rbx  
+    cmp rbx,r9
+    jnz .loopx1 
 
+    pop r9
+    mov r8,0     
+    mov rcx,0
+    mov rbx,1
 
-    call exit
-
-
-    ; SUM of all numElements
+                            ; Convierto buff2 a NUMERO
+.loopx2:
     mov rax,0
-    mov r8,0                  ; point to element last number
-.nextDigitloop:
-    mov rdi,r8
-    mov rbx,r11       ; number of elements to be added
-.nextElement:
-    xor rcx,rcx
-    mov cl,byte[buff+rdi]
-    add rax,rcx
-    dec rbx
-    cmp rbx,0
-    jz .nextDigitx
-    add rdi,40000
-    jmp .nextElement
- .nextDigitx:   
-    push rbx
-    push rdx
+    mov al,byte[buff2+rcx]
+    mul rbx                 ; RDX:RAX = RAX * RBX
+    add r8,rax
+    mov rax,rbx
     mov rbx,10
+    mul rbx                 ; RDX:RAX = RBX * 10
+    mov rbx,rax
+    inc rcx
+    cmp rcx,r9
+    jnz .loopx2
+    inc r8                  ; aumento en 1 el valor de buff2
+    cmp r8,10002
+    jz _end              ; FINALIZA cuando R8=10002 ==> Factorial de 10000
+                           ; Cargo buff2 con el nuevo numero
+    mov rcx,0
+    mov rax,r8
+    mov rbx,10
+.loopx3:
     mov rdx,0
     div rbx
-    add rdx,48
-    mov byte[result+r8],dl    
-    pop rdx
-    pop rdx
-    inc r8
-    cmp r8,20           ; cambiar por 40000
-    jnz .nextDigitloop
-    ;---------------------------------------------------------------------------------
-    mov byte[result+r8],dl    
-    pop rdx
-    pop rdx
-    inc r8
-    cmp r8,20           ;   cambiar por 40000
-    jnz .nextDigitloop
-    ;---------------------------------------------------------------------------------
-    mov rsi,result
+    mov byte[buff2+rcx],dl
+    inc rcx
+    cmp rax,0
+    jnz .loopx3
+    call resetResult
+    
+    ; print the results on screen
+    mov rsi,msg1
+    call print
+    mov rax,r8
+    dec rax
+    call printnumber
+    mov rsi,msg2
     call println
+
+    mov rsi,printable
+    mov rax,0
+.loopx6:
+    cmp byte[rsi+rax],'0'
+    jnz .loopx5
+    inc rax
+    jmp .loopx6 
+.loopx5:
+    add rsi,rax
+    call println
+    call printnewline
+    jmp .nextNumber
+
+_end:
+
     call exit
+
+
+
 
