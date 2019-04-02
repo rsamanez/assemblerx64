@@ -66,14 +66,12 @@ _start:
     mov rsi, char  ; buf: the temporary buffer, char
     mov rdx, 1     ; count: the length of the buffer, 1
     syscall
-    mov rax,1
+    mov rax,1       ; __NR_write-
   	mov rdi,1
     mov rdx,1
-  	syscall
+  	syscall         ; sys_write(1,char,1)  // RSI is still set to buf
     cmp byte[char],13
-    jz .end
-    jmp .readchar
-.end:
+    jnz .readchar
     
     ; reset settings (with ioctl again)
     mov rax, 16    ; __NR_ioctl
@@ -86,8 +84,8 @@ _start:
     mov rax,1
   	mov rdi,1
     mov rdx,msg2len
-  	syscall
+  	syscall         ; sys_write(1,msg2,msg2len)
 
     mov rax,60
   	mov rdi,0
-  	syscall
+  	syscall         ; sys_exit(0)
