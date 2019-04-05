@@ -1,6 +1,6 @@
 ; Exercise
 ;=================================================================================================
-;Calculate factorial of until 10000
+;Calculate factorial of until 40000
 ;
 ; Algorithm
 ;multiply(a[1..p], b[1..q], base)                            // Operands containing rightmost digits at index 1
@@ -17,7 +17,7 @@
 ; PHP Implementation
 ;   $a = array(4,6,7,8);
 ;   $b = array(7,8);
-;   $result=array(0,0,0,0,0,0,0,0);  
+;   $result=array(0,0,0,0,0,0,0,0);
 ;   for($i=0;$i<4;$i++)
 ;   {
 ;     $carry = 0;
@@ -44,7 +44,7 @@
 global _start
 
 %include 'basicFunctions.asm'
- 
+
 
 section .data
  buff1: times 400000 db '-'
@@ -82,7 +82,7 @@ resetResult:
     mov byte[buff1],1
     mov byte[buff2],2
 
-.nextNumber:    
+.nextNumber:
     mov rsi,buff1
     call getSize
     mov r8,rbx          ;  R8 = q
@@ -90,7 +90,7 @@ resetResult:
     call getSize
     mov r9,rbx          ;  R9 = p
 
-    mov rdx,0           ;  $i=0  
+    mov rdx,0           ;  $i=0
 .forA:
     mov byte[carry],0               ; carry = 0
     mov rcx,0           ;  $j=0
@@ -99,7 +99,7 @@ resetResult:
     mov bl,byte[buff2+rcx]          ;  $b[$j]
     mul bl                          ; al = al * bl
     add al,byte[carry]              ; al = al + carry
-    add byte[result+rcx+rdx],al     ; $result[$j+$i] = $result[$j+$i] + $carry + $b[$j]*$a[$i]; 
+    add byte[result+rcx+rdx],al     ; $result[$j+$i] = $result[$j+$i] + $carry + $b[$j]*$a[$i];
     mov bl,10
     mov ah,0
     mov al,byte[result+rcx+rdx]
@@ -113,25 +113,25 @@ resetResult:
     inc rdx
     cmp rdx,r8
     jnz .forA
-    
+
     push r9
-    mov rax,r9                      
+    mov rax,r9
     add rax,rdx
     mov r9,rax
     mov r10,rax
     mov rbx,0
 .loopx1:
-    mov al,byte[result+rbx] 
+    mov al,byte[result+rbx]
     mov byte[buff1+rbx],al          ; moving result to buffer1
     add al,48
     dec r10
     mov byte[printable+r10],al
-    inc rbx  
+    inc rbx
     cmp rbx,r9
-    jnz .loopx1 
+    jnz .loopx1
 
     pop r9
-    mov r8,0     
+    mov r8,0
     mov rcx,0
     mov rbx,1
 
@@ -163,7 +163,7 @@ resetResult:
     cmp rax,0
     jnz .loopx3
     call resetResult
-    
+
     ; print the results on screen
     mov rsi,msg1
     call print
@@ -179,7 +179,7 @@ resetResult:
     cmp byte[rsi+rax],'0'
     jnz .loopx5
     inc rax
-    jmp .loopx6 
+    jmp .loopx6
 .loopx5:
     add rsi,rax
     call println
@@ -189,7 +189,3 @@ resetResult:
 _end:
 
     call exit
-
-
-
-
