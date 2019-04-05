@@ -27,7 +27,6 @@
 
 global _start
 
-
 %include 'readKeyFunction.asm'
 %include 'basicFunctions.asm'
 
