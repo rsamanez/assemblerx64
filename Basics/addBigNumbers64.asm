@@ -27,6 +27,7 @@
 
 global _start
 
+
 %include 'readKeyFunction.asm'
 %include 'basicFunctions.asm'
 
@@ -60,8 +61,8 @@ moveBuffer:
     mov rdx,rbx
     shl rdx,6  ; RDX*64
 .movex4:
-    mov al,byte[buffer+rcx-1] 
-    mov byte[numbers+rdx],al    
+    mov al,byte[buffer+rcx-1]
+    mov byte[numbers+rdx],al
     dec rdx
     dec rcx
     cmp rcx,0
@@ -75,7 +76,7 @@ moveBuffer:
 
 ;  maxlength RDI
 ;  result buffer,0ah
-readNumber: 
+readNumber:
     push rax
     push rdx
     mov rdx,0
@@ -119,7 +120,7 @@ _start:
     mov [numElements],rax
     mov rbx,1
 
-.readAgain:  
+.readAgain:
     ; process to read the big numbers
     mov rsi,msg3
     call print
@@ -140,7 +141,7 @@ _start:
 .finish:
     ;-------------------------------------------------------------------------------
     ; start to adding big numbers
-    
+
     mov rax,0
     mov r8,64                  ; point to element last number
 .nextDigitloop:
@@ -149,21 +150,21 @@ _start:
 .nextElement:
     xor rcx,rcx
     mov cl,byte[numbers+rdi]
-    sub cl,48 
+    sub cl,48
     add rax,rcx
     dec rbx
     cmp rbx,0
     jz .nextDigit
     add rdi,64
     jmp .nextElement
- .nextDigit:   
+ .nextDigit:
     push rbx
     push rdx
     mov rbx,10
     mov rdx,0
     div rbx
     add rdx,48
-    mov byte[result+r8],dl    
+    mov byte[result+r8],dl
     pop rdx
     pop rdx
     dec r8
