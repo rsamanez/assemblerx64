@@ -3,7 +3,7 @@
 ; how to use this file:
 ;   %include 'basicFunctions.asm'
 ;==============================================================================
-; Author : Rommel Samanez
+; Author : Rommel Samanez 
 ;==============================================================================
 section .data
   newline: db 0ah,0
