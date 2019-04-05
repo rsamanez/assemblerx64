@@ -1,6 +1,6 @@
 ; Exercise
 ;=================================================================================================
-;Calculate factorial of until 40000
+;Calculate factorial up to 40000
 ;
 ; Algorithm
 ;multiply(a[1..p], b[1..q], base)                            // Operands containing rightmost digits at index 1
