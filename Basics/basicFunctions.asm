@@ -1,4 +1,4 @@
-; A list of basic functions to print ans scan
+; A list of basic functions to print and scan
 ; numbers and strings
 ; how to use this file:
 ;   %include 'basicFunctions.asm'

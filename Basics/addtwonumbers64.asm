@@ -1,4 +1,4 @@
-; Program to add two 8bytes numbers readed
+; Program to add two 8bytes numbers read
 ; Compile with:
 ;     nasm -f elf64 -o addtwonumbers64.o addtwonumbers64.asm
 ; Link with:

@@ -47,10 +47,10 @@ global _start
  
 
 section .data
- buff1: times 40000 db '-'
- buff2: times 6 db '-'
- result: times 40004 db 0
- printable: times 40000 db 0
+ buff1: times 400000 db '-'
+ buff2: times 8 db '-'
+ result: times 400004 db 0
+ printable: times 400000 db 0
  carry: db 0
  msg1: db "Factorial of [",0
  msg2: db "]=",0
@@ -149,7 +149,7 @@ resetResult:
     cmp rcx,r9
     jnz .loopx2
     inc r8                  ; aumento en 1 el valor de buff2
-    cmp r8,10002
+    cmp r8,40002
     jz _end              ; FINALIZA cuando R8=10002 ==> Factorial de 10000
                            ; Cargo buff2 con el nuevo numero
     mov rcx,0
