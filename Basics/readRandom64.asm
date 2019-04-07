@@ -46,7 +46,7 @@ loopx1:
     mov rsi,msg1
     call print
     inc rbx
-    cmp rbx,10000
+    cmp rbx,20
     jnz loopx1
 
     call printnewline
