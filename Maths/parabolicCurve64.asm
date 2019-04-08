@@ -1,4 +1,9 @@
 ; Program to draw flight path of a projectile to 1000x1000 Bitmap File
+;
+; Ecuation:
+;
+;      y = x.tan(Ø) - g.x^2 / 2Vo^2 . cos^2(Ø)
+;
 ; Compile with:
 ;     nasm -f elf64 -o parabolicCurve64.o parabolicCurve64.asm
 ; Link with:
