@@ -1,18 +1,19 @@
-; Program to draw lines to 1000x1000 Bitmap File
+; Program to draw flight path of a projectile to 1000x1000 Bitmap File
 ; Compile with:
-;     nasm -f elf64 -o drawLines64.o drawLines64.asm
+;     nasm -f elf64 -o parabolicCurve64.o parabolicCurve64.asm
 ; Link with:
-;     ld -m elf_x86_64 -o drawLines64 drawLines64.o
+;     ld -m elf_x86_64 -o parabolicCurve64 parabolicCurve64.o
 ; Run with:
-;     ./drawLines64
+;     ./parabolicCurve64
 ;==============================================================================
 ; Author : Rommel Samanez
+; https://github.com/rsamanez/assemblerx64
 ;==============================================================================
 global _start
 
 
 section .data
-  fileName:  db "lines.bmp",0
+  fileName:  db "parabolicCurve.bmp",0
   fileFlags: dq 0102o         ; create file + read and write mode
   fileMode:  dq 00600o        ; user has read write permission
   fileDescriptor: dq 0
@@ -61,40 +62,41 @@ drawPixel:
     pop rbx
     pop rax
     ret
-; drawLine(x1,y1,x2,y2,color) color = R10  x1=r8 y1=r9 x2=r11 y2=r12    
-drawLine:
+; drawParabola(color) color = R10  v0=10184  angle=60°    
+drawParabola:
     push rax
     push rbx
-    push rcx                  ;  line   y = M*x/1000   M=w*1000/q  w=y2-y1  q=x2-x1 
-    push rdx
+    push rcx                  ;  ecuation   y = 17321x/10000 - x^2/548
+    push rdx                  ; x = [0..950]
     ;-----------------------------------
-    mov rax,r12             ; rax <- y2
-    sub rax,r9              ; rax <- y2 - y1
-    mov rbx,1000
-    mul rbx                 ; rax <- rax*1000
-    mov rbx,r11             ; rbx <- x2
-    sub rbx,r8              ; rbx <- x2 - x1
-    xor rdx,rdx             ; rdx = 0
-    div rbx                 ; RAX / RBX  RAX= value  M
-    push rax
-    pop rcx                 ; rcx <- M
-    mov rbx,r8              ; rbx <- x1
+    mov r10,0x00ff00
+    mov rbx,1
     ;-----------------------------------------
     push r8
     push r9
 nextPixel:
-    mov rax,rbx             ; rbx = x
-    mul rcx                 ; rax = M*x
-    push rcx
+    mov rax,rbx             ; rbx <- x
+    mov rcx,17321
+    mul rcx                 ; rax <- x * 17321
     xor rdx,rdx
-    mov rcx,1000
-    div rcx                 ; rax = M*x/1000
-    pop rcx
+    mov rcx,10000
+    div rcx
+    push rax                ; rax <- 17321x/10000
+    mov rax,rbx             ; rax <- x
+    xor rdx,rdx
+    mul rbx                 ; rax <- x^2
+    mov rcx,548
+    xor rdx,rdx
+    div rcx                 ; rax <- x^2/548
+    mov rcx,rax             ; rcx <- x^2/548
+    pop rax
+    sub rax,rcx                 ; rax <- 17321x/10000 - x^2/548
+    ;--------------------------------------
     mov r8,rbx              ; r8 <- x
     mov r9,rax              ; r9 <- y
     call drawPixel
     inc rbx
-    cmp rbx,r11
+    cmp rbx,950
     jnz nextPixel
     pop r9
     pop r8
@@ -104,58 +106,6 @@ nextPixel:
     pop rbx
     pop rax
     ret
-
-
-drawLines:
-    mov r8,0
-    mov r9,0
-    mov r10,0xff0000
-    mov r11,900
-    mov r12,20
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,900
-    mov r12,200
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,900
-    mov r12,400
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,800
-    mov r12,600
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,900
-    mov r12,900
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,600
-    mov r12,900
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,400
-    mov r12,900
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,200
-    mov r12,900
-    call drawLine
-    mov r8,0
-    mov r9,0
-    mov r11,100
-    mov r12,900
-    call drawLine
-    ret  
-
-
 
 _start:
     mov rax,2               ;   sys_open
@@ -172,7 +122,7 @@ _start:
     mov rdx,54
     syscall
 
-    call drawLines
+    call drawParabola
     ; write the Image to file
     mov rax,1                 ; sys_write
     mov rdi,[fileDescriptor]
