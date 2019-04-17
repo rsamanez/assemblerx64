@@ -1,0 +1,3 @@
+nasm -f elf64 -o sys_stat64.o sys_stat64.asm
+ld -m elf_x86_64 -o sys_stat64 sys_stat64.o
+./sys_stat64

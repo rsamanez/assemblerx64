@@ -68,7 +68,8 @@ _start:
 
     fld qword [val] ;load value into st0
     fsqrt           ;compute square root of st0 and store in st0
-    fstp qword [res] ;store st0 in [res], and pop it off the x87 stack (leaving the x87 register stack empty again)
+    ;fstp qword [res] ;store st0 in [res], and pop it off the x87 stack (leaving the x87 register stack empty again)
+    fbstp qword[res]
     mov rax,qword[res]
     call binprint
     call printnewline

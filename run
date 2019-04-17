@@ -1,0 +1,3 @@
+nasm -felf64 -o server.o echoServer64.asm
+ld server.o -o server
+./server
